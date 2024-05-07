@@ -21,7 +21,7 @@ class RootView extends GetView<SplashService> {
                           onPressed: () => controller.logout(),
                           icon: const Icon(Icons.arrow_back_ios_new)),
                       title: Text(
-                        AppStrings.face_verification,
+                        AppStrings.faceVrification,
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge!

@@ -7,18 +7,36 @@ import '../constants/const.dart';
 
 class FaceVerifyCustoms extends GetxController {
   static FaceVerifyCustoms get to => Get.find<FaceVerifyCustoms>();
-  SizedBox button(String text, {bool shrink = true}) => SizedBox(
-        width: shrink ? text.length * 12 : double.infinity,
+
+  SizedBox button(String text, {bool shrink = true, IconData? icon}) =>
+      SizedBox(
+        width: shrink
+            ? text.length * 12 + (icon == null ? 0 : 80)
+            : double.infinity,
         height: 55,
         child: Container(
-          margin: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+          margin: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(GlobalConstants.textSize1),
             color: const Color(0xff5F69C7),
           ),
           child: Center(
-            child: Text(text,
-                textAlign: TextAlign.center, style: AppColor.whiteTextStyle1),
+            child: icon == null
+                ? Text(text,
+                    textAlign: TextAlign.center,
+                    style: AppColor.whiteTextStyle1)
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        color: Colors.white,
+                      ),
+                      Text(text,
+                          textAlign: TextAlign.center,
+                          style: AppColor.whiteTextStyle1),
+                    ],
+                  ),
           ),
         ),
       );
