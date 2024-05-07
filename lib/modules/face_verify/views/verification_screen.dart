@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'package:get/get.dart';
+import 'package:hello_orth/modules/face_verify/controllers/face_verification_controller.dart';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-
 // Import necessary packages
 // import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 // import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
 
-class VerificationView extends StatelessWidget {
+class VerificationView extends GetView<FaceVerificationController> {
   const VerificationView({super.key});
 
   @override
@@ -16,6 +18,18 @@ class VerificationView extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 // class MyHomePage extends StatefulWidget {
 //   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -217,3 +231,6 @@ class VerificationView extends StatelessWidget {
 // //     );
 // //   }
 // // }
+
+
+// }
