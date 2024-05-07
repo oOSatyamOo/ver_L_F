@@ -17,6 +17,6 @@ class DashboardBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<DashboardController>(() => DashboardController());
-    Get.lazyPut<FaceVerificationController>(() => FaceVerificationController());
+    // Get.lazyPut<FaceVerificationController>(() => FaceVerificationController());
   }
 }

@@ -8,7 +8,7 @@ import 'components/hello_face_custome.dart';
 void main() async {
   Get.put<FaceVerifyCustoms>(FaceVerifyCustoms(), permanent: true);
   //  Get.lazyPut<NetworkInfoImpl>(() => NetworkInfoImpl(),fenix: true);
-
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     GetMaterialApp.router(
       enableLog: true,

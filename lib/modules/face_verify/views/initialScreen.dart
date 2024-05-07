@@ -62,7 +62,14 @@ class InitialFaceVerification extends GetView<FaceVerificationController> {
                   )),
               const Divider(),
               InkWell(
-                  onTap: () => controller.onChange(1),
+                  onTap: () {
+                    // if (controller.cameraDescription.hashCode) {
+                    controller
+                        .onNewCameraSelected(controller.cameraDescription);
+                    // }
+
+                    controller.onChange(1);
+                  },
                   child: FaceVerifyCustoms.to
                       .button(AppStrings.verify, shrink: false)),
             ],

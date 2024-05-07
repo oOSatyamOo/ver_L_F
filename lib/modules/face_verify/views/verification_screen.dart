@@ -1,219 +1,234 @@
-import 'dart:async';
+import 'package:camera/camera.dart';
+import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
+import 'package:hello_orth/components/hello_face_custome.dart';
+import 'package:hello_orth/constants/images_path.dart';
+import 'package:hello_orth/constants/string_const.dart';
 
-// Import necessary packages
-// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-// import 'package:flutter_camera_ml_vision/flutter_camera_ml_vision.dart';
+import '../../../routes/app_pages.dart';
+import '../controllers/face_verification_controller.dart';
 
-class VerificationView extends StatelessWidget {
+class VerificationView extends GetView<FaceVerificationController> {
   const VerificationView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Text('data'),
-    );
+    return GetRouterOutlet.builder(builder: (context, delegate, currentRoute) {
+      return Scaffold(
+        body: Obx(() {
+          return !controller.controllerInitialized
+              ? const Center(child: Text('...'))
+              : controller.isPhotoTaken.value && !controller.isImageDark.value
+                  ? Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.file(
+                            controller.getImage,
+                          ),
+                        ),
+                        Text(
+                          AppStrings.faceVerificationSuccess,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            //DO API REST CALL
+                          },
+                          child: FaceVerifyCustoms.to
+                              .button(AppStrings.submit, shrink: false),
+                        )
+                      ],
+                    )
+                  : controller.noofRetry > 5
+                      ? Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 1,
+                              child: Image.file(
+                                controller.getImage,
+                              ),
+                            ),
+                            Text(
+                              AppStrings.couldntRecognize,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.w600),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    AppStrings.dontworry,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(
+                                    height: 40.0,
+                                  ),
+                                  Text(
+                                    AppStrings.gotodashboardMsg,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(
+                                    height: 40.0,
+                                  ),
+                                  Divider(),
+                                  InkWell(
+                                    onTap: () {
+                                      controller.logout();
+                                    },
+                                    child: FaceVerifyCustoms.to.button(
+                                        AppStrings.gotodashboard,
+                                        shrink: false),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                      : Stack(
+                          children: [
+                            Positioned.fill(
+                              child: AspectRatio(
+                                aspectRatio: controller
+                                    .cameraController.value.aspectRatio,
+                                child: controller.isPhotoTaken.value &&
+                                        controller.isImageDark.value
+                                    ? Image.file(
+                                        controller.getImage,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : CameraPreview(
+                                        controller.cameraController),
+                              ),
+                              // controller.cameraController.value.aspectRatio),
+                            ),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(30.0),
+                                    child: Text(
+                                      controller.currentStatusMsg.value,
+                                      style: controller.isPhotoTaken.value &&
+                                              controller.isImageDark.value
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(color: Colors.white)
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                    ),
+                                  ),
+                                  controller.isPhotoTaken.value &&
+                                          controller.isImageDark.value
+                                      ? Padding(
+                                          padding: EdgeInsets.only(
+                                            top: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.3,
+                                          ),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.sunny,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(
+                                                height: 20.0,
+                                              ),
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.restart_alt,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Text(
+                                                    AppStrings
+                                                        .imagelightingisLess,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.white),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : AspectRatio(
+                                          aspectRatio: 1.2,
+                                          child: Image.asset(
+                                              ImagePath.capture_focus)),
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 80.0,
+                              left: 16.0,
+                              right: 16.0,
+                              child: Center(
+                                child: controller.isPhotoTaken.value
+                                    ? InkWell(
+                                        onTap: () {
+                                          controller.logout();
+                                        },
+                                        child: FaceVerifyCustoms.to.button(
+                                            AppStrings.retakephoto,
+                                            icon: Icons.restart_alt),
+                                      )
+                                    : Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '${controller.progressValue}% Scanning',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                          ),
+                                          LinearProgressIndicator(
+                                            backgroundColor: Colors.grey[
+                                                300], // Background color of the progress bar
+                                            valueColor:
+                                                const AlwaysStoppedAnimation<
+                                                    Color>(Color(0xff5F69C7)),
+                                            value: controller.progressValue /
+                                                100, // Value of progress between 0.0 and 1.0
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            )
+                          ],
+                        );
+        }),
+      );
+    });
   }
 }
-
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-//   final String title;
-
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   List<String> data = [];
-//   final _scanKey = GlobalKey<CameraMlVisionState>();
-//   BarcodeDetector detector = FirebaseVision.instance.barcodeDetector();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.title),
-//       ),
-//       body: Stack(
-//         fit: StackFit.expand,
-//         children: [
-//           CameraMlVision<List<Barcode>>(
-//             key: _scanKey,
-//             detector: detector.detectInImage,
-//             resolution: ResolutionPreset.high,
-//             onResult: (barcodes) {
-//               if (barcodes == null ||
-//                   barcodes.isEmpty ||
-//                   data.contains(barcodes.first.displayValue) ||
-//                   !mounted) {
-//                 return;
-//               }
-//               print('RESULT');
-//               // setState(() {
-//               //   data.add(barcodes.first.displayValue);
-//               // });
-//             },
-//             onDispose: () {
-//               detector.close();
-//             },
-//           ),
-//           Container(
-//             alignment: Alignment.bottomCenter,
-//             child: Column(
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 Expanded(
-//                   child: ConstrainedBox(
-//                     constraints: BoxConstraints(maxHeight: 250),
-//                     child: Scrollbar(
-//                       child: ListView(
-//                         children: data.map((d) {
-//                           return Container(
-//                             color: Color(0xAAFFFFFF),
-//                             child: Padding(
-//                               padding: const EdgeInsets.all(16),
-//                               child: Text(d),
-//                             ),
-//                           );
-//                         }).toList(),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                   children: <Widget>[
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         _scanKey.currentState!.toggle();
-//                       },
-//                       child: Text('Start/Pause camera'),
-//                     ),
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         Navigator.of(context).push(MaterialPageRoute(
-//                             builder: (context) => _SecondScreen()));
-//                       },
-//                       child: Text('Push new route'),
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ), // This trailing comma makes auto-formatting nicer for build methods.
-//     );
-//   }
-// }
-
-// class _SecondScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(),
-//       body: ElevatedButton(
-//         onPressed: () {
-//           Navigator.of(context).push(MaterialPageRoute(
-//             builder: (context) => _SecondScreen(),
-//           ));
-//         },
-//         child: Text('Push new route'),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Define a StatefulWidget for your face verification screen
-// // class FaceVerificationScreen extends StatefulWidget {
-// //   @override
-// //   _FaceVerificationScreenState createState() => _FaceVerificationScreenState();
-// // }
-
-// // class _FaceVerificationScreenState extends State<FaceVerificationScreen> {
-// //   // Initialize variables
-// //   bool isFaceDetected = false;
-// //   bool isHoldingStill = false;
-// //   bool isBrightnessOk = false;
-
-// //   // Method to process the captured image
-// //   Future<void> processImage(InputImage image) async {
-// //     // Create a face detector
-// //     final FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
-    
-// //     // Detect faces in the image
-// //     final List<Face> faces = await faceDetector.processImage(image);
-
-// //     // Check if a face is detected
-// //     if (faces.isNotEmpty) {
-// //       setState(() {
-// //         isFaceDetected = true;
-// //       });
-      
-// //       // Start timer for hold still feature
-// //       Timer(Duration(seconds: 5), () {
-// //         setState(() {
-// //           isHoldingStill = true;
-// //         });
-// //       });
-
-// //       // Analyze brightness of the image
-// //       double brightness = calculateBrightness(image);
-// //       if (brightness >= 0.5) {
-// //         setState(() {
-// //           isBrightnessOk = true;
-// //         });
-// //       }
-// //     }
-    
-// //     // Dispose the face detector
-// //     await faceDetector.close();
-// //   }
-
-// //   // Method to calculate brightness of an image
-// //   double calculateBrightness(InputImage image) {
-// //     // Calculate brightness here
-// //     // Return brightness value
-// //   }
-
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold(
-// //       appBar: AppBar(
-// //         title: Text('Face Verification'),
-// //       ),
-// //       body: Center(
-// //         child: Column(
-// //           mainAxisAlignment: MainAxisAlignment.center,
-// //           children: [
-// //             // Display instructions and feedback to the user
-// //             Text('Please hold still and ensure proper lighting.'),
-// //             if (!isFaceDetected)
-// //               Text('No face detected.'),
-// //             if (isFaceDetected && !isHoldingStill)
-// //               Text('Hold still...'),
-// //             if (isFaceDetected && isHoldingStill && !isBrightnessOk)
-// //               Text('Ensure proper lighting...'),
-// //             // Display captured image or camera feed
-// //             // Implement camera functionality here
-// //           ],
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }

@@ -48,7 +48,7 @@ class LoginView extends GetView<LoginController> {
               controller.loginSuccess();
             },
             child: FaceVerifyCustoms.to.button(
-              AppStrings.face_verification,
+              AppStrings.faceVrification,
             ),
           )));
     });
